@@ -15,14 +15,14 @@ def menu(switch):
     print("------ MENU ------")
     print("1 - Login")
     print("2 - Requisição de prova")
-    print("3 - Respostas da prova")
+    print("3 - Responder prova")
     print("4 - Resultado da prova")
     print("5 - Logout")
     option = input(">> ")
     switch[option]()
 
 def login():
-    print("------ LOGIN ------")
+    print("****** LOGIN *****\n")
     login = input("Login: ")
     senha = input("Senha: ")
     global cliente
@@ -30,16 +30,21 @@ def login():
     cliente.login()
 
 def prova():
-    print("prova")
+    print("****** SOLICITA PROVA *****\n")
+    idprova = input("ID da prova: ")
+    cliente.reqprova(idprova)
 
 def respostas():
     print("respostas")
+    idprova = input("ID da prova: ")
+    # a interface sabe quantas questões têm para o cliente responder?
 
 def resultado():
     print("resultado")
+    idprova = input("ID da prova: ")
 
 def logout():
-    print("------ LOGOUT ------")
+    print("***** LOGOUT *****\n")
     print('usuario: ', cliente.usuario)
     print('senha: ', cliente.senha)
     print('token: ', cliente.token)
@@ -60,3 +65,4 @@ if __name__ == '__main__':
         menu(switch)
     
     cliente.close()
+    

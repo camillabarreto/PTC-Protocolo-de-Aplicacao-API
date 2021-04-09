@@ -11,7 +11,7 @@ class API():
     def mensagem(data):
         msg = provaonline_pb2.MENSAGEM()
         msg.ParseFromString(data)
-        print('Mensagem recebida:\n', msg)
+        # print('Mensagem recebida:\n', msg)
 
         if msg.HasField('login'):
             l = provaonline_pb2.LOGIN()
@@ -27,16 +27,16 @@ class API():
             return a,"acklogin"
             
         elif msg.HasField('reqprova'):
-            r = provaonline_pb2.REQ_PROVA()
-            r.token = msg.reqprova.token
-            r.id_prova = msg.reqprova.id_prova
-            return r,"reqprova"
+            # r = provaonline_pb2.REQ_PROVA()
+            # r.token = msg.reqprova.token
+            # r.id_prova = msg.reqprova.id_prova
+            return msg,"reqprova"
 
         elif msg.HasField('ackreqprova'):
-            a = provaonline_pb2.ACK_REQ_PROVA()
-            a.id_prova = msg.ackreqprova.id_prova
-            a.questoes = msg.ackreqprova.questoes
-            return a,"ackreqprova"
+            # a = provaonline_pb2.ACK_REQ_PROVA()
+            # a.id_prova = msg.ackreqprova.id_prova
+            # a.questoes = msg.ackreqprova.questoes
+            return msg,"ackreqprova"
 
         elif msg.HasField('reqresp'):
             r = provaonline_pb2.REQ_RESP()
@@ -82,10 +82,14 @@ class API():
         m.reqprova.id_prova = id_prova #string
         return m.SerializeToString()
     
-    def ackreqprova(id_prova, questoes):
+    def ackreqprova():
         m = provaonline_pb2.MENSAGEM()
-        m.ackreqprova.id_prova = id_prova #string
-        m.ackreqprova.questoes = questoes #QUESTAO
+        try:
+            f = open('questoes.txt', "rb")
+            m.ackreqprova.ParseFromString(f.read())
+            f.close()
+        except IOError:
+            print("Could not open file.  Creating a new one.")
         return m.SerializeToString()
     
     def reqresp(token, id_prova, respostas):

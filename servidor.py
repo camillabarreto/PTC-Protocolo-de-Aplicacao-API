@@ -5,9 +5,13 @@ from socket import*
 import provaonline_pb2
 from api import API
 
+# LOGIN
 usuario = ["aluno"]
 senha = ["aluno"]
 token = None
+
+# PROVA
+idprova = '11233'
 
 def checklogin(msg):
     print("LOGIN")
@@ -19,8 +23,14 @@ def checklogin(msg):
     else:
         return API.acklogin('000000000')
 
-def reqprova():
+def maketest(msg):
     print("REQPROVA")
+    # consulta o id para saber qual a prova correspondente
+    '''
+    global idprova
+    global questoes
+    return API.ackreqprova(idprova, questoes)
+    '''
 
 def reqresp():
     print("REQRESP")
@@ -34,7 +44,6 @@ def logout(msg):
     token = None
 
 if __name__ == '__main__':
-    
     s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)
     s.bind(('0.0.0.0', 8888))
     s.listen()  # espera conexões na porta
@@ -50,7 +59,9 @@ if __name__ == '__main__':
             con.send(data)
 
         elif des=='reqprova':
-            reqprova()
+            print('REQ_PROVA')
+            # data = maketest(msg)
+            con.send(API.ackreqprova())
             
         elif des=='reqresp':
             reqresp()

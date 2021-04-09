@@ -22,7 +22,7 @@ class Cliente():
         data = API.login(self.usuario, self.senha)
         print('Mensagem codificada:', data)
         self.s.send(data) # envia dados pelo socket
-        ## espera ack
+
         resp = self.s.recv(1024)
         msg,des = API.mensagem(resp)
         if des=='acklogin': # se for mensagem de acklogin
@@ -30,7 +30,15 @@ class Cliente():
             print("token: ",msg.token)
             self.token = msg.token
         self.s.shutdown(SHUT_RDWR) # como receber mensagem de volta do servidor?
+
     
+    def logout(self):
+        self.connect()
+        data = API.logout(self.token)
+        print('Mensagem codificada:', data)
+        self.s.send(data) # envia dados pelo socket
+        self.s.shutdown(SHUT_RDWR)
+
     def reqprova(self, id_prova):
         self.connect()
         data = API.reqprova(self.token, id_prova)
@@ -41,8 +49,8 @@ class Cliente():
         msg,des = API.mensagem(resp)
         if des=='ackreqprova': # se for mensagem de acklogin
             print('Resposta servidor:\n', msg)
-        self.s.shutdown(SHUT_RDWR) # como receber mensagem de volta do servidor?
-    
+        self.s.shutdown(SHUT_RDWR)
+
     def reqresp(self, token, id_prova, respostas):
         self.connect()
         data = API.reqresp(self.token, id_prova, respostas)
