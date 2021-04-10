@@ -10,6 +10,8 @@ class Cliente():
         self.usuario = login
         self.senha = senha
         self.token = ''
+        self.prova = None
+
 
     def connect(self):
         # Cria conexão por socket
@@ -47,13 +49,21 @@ class Cliente():
         ## espera ack
         resp = self.s.recv(1024)
         msg,des = API.mensagem(resp)
-        if des=='ackreqprova': # se for mensagem de acklogin
+        if des=='ackreqprova': # se for mensagem de ackreqprova
             print('Resposta servidor:\n', msg)
+            self.prova = msg.ackreqprova
         self.s.shutdown(SHUT_RDWR)
 
-    def reqresp(self, token, id_prova, respostas):
-        self.connect()
-        data = API.reqresp(self.token, id_prova, respostas)
+    def reqresp(self):
+        self.connect()        
+        respostas = self.coletando_respostas()
+
+        # crio resposta com api
+        # respostas = [[654,'222'],[987,'111'],[321,"A Rosa dos Ventos eh um instrumento antigo utilizado para auxiliar na localizacao relativa."]]
+        # for r in respostas:
+        #     API.resposta_discursiva
+
+        data = API.reqresp(self.token, self.prova.id_prova, respostas)
         print('Mensagem codificada:', data)
         self.s.send(data) # envia dados pelo socket
         ## ack??
@@ -78,3 +88,23 @@ class Cliente():
         self.s.send(data) # envia dados pelo socket
         ## ack??
         self.s.shutdown(SHUT_RDWR) # como receber mensagem de volta do servidor?
+
+    
+    def coletando_respostas(self): # Respostas estáticas
+        
+        # R1
+        resp1 = provaonline_pb2.RESPOSTA()
+        resp1.id = 654
+        resp1.codigos.codigos.append('222')
+        
+        # R2
+        resp2 = provaonline_pb2.RESPOSTA()
+        resp2.id = 987
+        resp2.codigos.codigos.append('111')
+        
+        # R3
+        resp3 = provaonline_pb2.RESPOSTA()
+        resp3.id = 321
+        resp3.texto = "A Rosa dos Ventos eh um instrumento antigo utilizado para auxiliar na localizacao relativa."
+
+        return [resp1, resp2, resp3]

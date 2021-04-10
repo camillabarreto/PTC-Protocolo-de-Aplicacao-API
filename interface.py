@@ -35,9 +35,8 @@ def prova():
     cliente.reqprova(idprova)
 
 def respostas():
-    print("respostas")
-    idprova = input("ID da prova: ")
-    # a interface sabe quantas questões têm para o cliente responder?
+    print("****** ENVIA RESPOSTAS *****\n")
+    cliente.reqresp()
 
 def resultado():
     print("resultado")

@@ -39,11 +39,11 @@ class API():
             return msg,"ackreqprova"
 
         elif msg.HasField('reqresp'):
-            r = provaonline_pb2.REQ_RESP()
-            r.token = msg.reqresp.token
-            r.id_prova = msg.reqresp.id_prova
-            r.respostas = msg.reqresp.respostas
-            return r,"reqresp"
+            # r = provaonline_pb2.REQ_RESP()
+            # r.token = msg.reqresp.token
+            # r.id_prova = msg.reqresp.id_prova
+            # r.respostas = msg.reqresp.respostas
+            return msg,"reqresp"
 
         elif msg.HasField('reqresultado'):
             r = provaonline_pb2.REQ_RESULTADO()
@@ -95,8 +95,14 @@ class API():
     def reqresp(token, id_prova, respostas):
         m = provaonline_pb2.MENSAGEM()
         m.reqresp.token = token #string
-        m.reqresp.id_prova = id_prova #string 
-        m.reqresp.respostas = respostas #RESPOSTA
+        m.reqresp.id_prova = id_prova #string
+        for r in respostas:
+            rp = m.reqresp.respostas.add()
+            rp.id = r.id
+            if r.HasField('codigos'): 
+                for c in r.codigos.codigos: rp.codigos.codigos.append(c)
+            else: rp.texto = r.texto
+            
         return m.SerializeToString()
 
     def reqresultado(token, id_prova):
@@ -116,4 +122,14 @@ class API():
         m = provaonline_pb2.MENSAGEM()
         m.logout.token = token #string
         return m.SerializeToString()
+
+    # def questao(id, enunciado, pontos, alternativas):
+    #     pass
     
+    # def alternativa(descricao, codigo):
+    #     pass
+
+    def resposta_discursiva(id, texto):
+        pass
+    def resposta_optativa(id, codigos):
+        pass

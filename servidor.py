@@ -32,8 +32,9 @@ def maketest(msg):
     return API.ackreqprova(idprova, questoes)
     '''
 
-def reqresp():
+def reqresp(msg):
     print("REQRESP")
+    print('Recebido pelo servidor: ', msg)
 
 def reqresultado():
     print("REQRESULTADO")
@@ -42,6 +43,15 @@ def logout(msg):
     print("LOGOUT")
     global token
     token = None
+
+# def pegando_questoes():
+
+#     # arq q1 -> questao1
+#     # arq q2-> questao2
+#     # arq q3-> questao3
+    
+#     # return lista de questoes
+
 
 if __name__ == '__main__':
     s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)
@@ -60,11 +70,14 @@ if __name__ == '__main__':
 
         elif des=='reqprova':
             print('REQ_PROVA')
-            # data = maketest(msg)
+
+            # questoes = pegando_questoes()     # questoes é uma lista
+            # API.ackreqprova(id_prova, questoes)
+
             con.send(API.ackreqprova())
             
         elif des=='reqresp':
-            reqresp()
+            reqresp(msg)
             
         elif des=='reqresultado':
             reqresultado()
