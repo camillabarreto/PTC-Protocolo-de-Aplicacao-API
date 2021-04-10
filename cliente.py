@@ -58,12 +58,23 @@ class Cliente():
 
     def reqresp(self):
         # crio resposta com api
-        # respostas = [[654,'222'],[987,'111'],[321,"A Rosa dos Ventos eh um instrumento antigo utilizado para auxiliar na localizacao relativa."]]
-        # for r in respostas:
-        #     API.resposta_discursiva
+        respostas = [[654,['222','xxx']],[987,'111'],[321,"A Rosa dos Ventos eh um instrumento antigo utilizado para auxiliar na localizacao relativa."]]
+        resp = []
+        for r in respostas:
+            print("resposta : ",r)
+            for q in self.prova.questoes:
+                print("questao : ",q)
+                if q.id == r[0]:
+                    if len(q.alternativas) > 1: 
+                        print("optativa")
+                        resp.append(API.resposta_optativa(r[0], r[1]))
+                    else: 
+                        print("discursiva")
+                        resp.append(API.resposta_discursiva(r[0], r[1]))
+                    break
         
-        respostas = self.coletando_respostas()
-        data = API.reqresp(self.token, self.prova.id_prova, respostas)
+        # respostas = self.coletando_respostas()
+        data = API.reqresp(self.token, self.prova.id_prova, resp)
         print('Mensagem codificada:', data)
         self.connect(data) # envia dados pelo socket
         self.shutdown()

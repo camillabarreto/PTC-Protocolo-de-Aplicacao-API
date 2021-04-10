@@ -30,6 +30,10 @@ alternativa22.descricao = '(b) Aracaju'
 alternativa23 = questao2.alternativas.add()
 alternativa23.codigo = '333'
 alternativa23.descricao = '(c) Goiania'
+questao3 = ackreqprova.questoes.add()
+questao3.id = 321
+questao3.enunciado = 'Qual a utilidade da Rosa dos Ventos?'
+questao3.pontos = 4
 
 data4 = ackreqprova.SerializeToString()
 

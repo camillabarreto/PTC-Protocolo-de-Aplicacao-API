@@ -130,6 +130,16 @@ class API():
     #     pass
 
     def resposta_discursiva(id, texto):
-        pass
+        r = provaonline_pb2.RESPOSTA()
+        r.id = id
+        r.texto = texto
+        return r
+        
     def resposta_optativa(id, codigos):
-        pass
+        r = provaonline_pb2.RESPOSTA()
+        r.id = id
+        if type(codigos) is not list:
+            r.codigos.codigos.append(codigos)
+        else:
+            for c in codigos: r.codigos.codigos.append(c)
+        return r
