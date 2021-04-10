@@ -13,17 +13,20 @@ class Cliente():
         self.prova = None
 
 
-    def connect(self):
+    def connect(self, data):
         # Cria conexão por socket
         self.s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)
         self.s.bind(('0.0.0.0', 0))
         self.s.connect(('127.0.0.1', 8888)) # passar IP de destino por argumento de linha
+        self.s.send(data) # envia dados pelo socket
+    
+    def shutdown(self):
+        self.s.shutdown(SHUT_RDWR)  
         
     def login(self):
-        self.connect()
         data = API.login(self.usuario, self.senha)
         print('Mensagem codificada:', data)
-        self.s.send(data) # envia dados pelo socket
+        self.connect(data) # envia dados pelo socket
 
         resp = self.s.recv(1024)
         msg,des = API.mensagem(resp)
@@ -31,63 +34,59 @@ class Cliente():
             print('Resposta servidor:\n', msg)
             print("token: ",msg.token)
             self.token = msg.token
-        self.s.shutdown(SHUT_RDWR) # como receber mensagem de volta do servidor?
+        self.shutdown() 
 
     
     def logout(self):
-        self.connect()
         data = API.logout(self.token)
         print('Mensagem codificada:', data)
-        self.s.send(data) # envia dados pelo socket
-        self.s.shutdown(SHUT_RDWR)
+        self.connect(data) # envia dados pelo socket
+        self.shutdown()
 
     def reqprova(self, id_prova):
-        self.connect()
         data = API.reqprova(self.token, id_prova)
         print('Mensagem codificada:', data)
-        self.s.send(data) # envia dados pelo socket
+        self.connect(data) # envia dados pelo socket
+        
         ## espera ack
         resp = self.s.recv(1024)
         msg,des = API.mensagem(resp)
         if des=='ackreqprova': # se for mensagem de ackreqprova
             print('Resposta servidor:\n', msg)
             self.prova = msg.ackreqprova
-        self.s.shutdown(SHUT_RDWR)
+        self.shutdown()
 
     def reqresp(self):
-        self.connect()        
-        respostas = self.coletando_respostas()
-
         # crio resposta com api
         # respostas = [[654,'222'],[987,'111'],[321,"A Rosa dos Ventos eh um instrumento antigo utilizado para auxiliar na localizacao relativa."]]
         # for r in respostas:
         #     API.resposta_discursiva
-
+        
+        respostas = self.coletando_respostas()
         data = API.reqresp(self.token, self.prova.id_prova, respostas)
         print('Mensagem codificada:', data)
-        self.s.send(data) # envia dados pelo socket
-        ## ack??
-        self.s.shutdown(SHUT_RDWR) # como receber mensagem de volta do servidor?
+        self.connect(data) # envia dados pelo socket
+        self.shutdown()
     
     def reqresultado(self, token, id_prova):
-        self.connect()
         data = API.reqresultado(self.token, id_prova)
         print('Mensagem codificada:', data)
-        self.s.send(data) # envia dados pelo socket
+        self.connect(data) # envia dados pelo socket
+        
         ## espera ack
         resp = self.s.recv(1024)
         msg,des = API.mensagem(resp)
         if des=='ackreqresultado': # se for mensagem de acklogin
             print('Resposta servidor:\n', msg)
-        self.s.shutdown(SHUT_RDWR) # como receber mensagem de volta do servidor?
+        self.shutdown()
     
     def logout(self):
-        self.connect()
         data = API.logout(self.token)
         print('Mensagem codificada:', data)
-        self.s.send(data) # envia dados pelo socket
+        self.connect(data) # envia dados pelo socket
+
         ## ack??
-        self.s.shutdown(SHUT_RDWR) # como receber mensagem de volta do servidor?
+        self.shutdown()
 
     
     def coletando_respostas(self): # Respostas estáticas
