@@ -92,11 +92,19 @@ class API():
             print("Could not open file.  Creating a new one.")
         return m.SerializeToString()
     
-    def reqresp(token, id_prova, respostas):
+    def reqresp(token, id_prova, respostas, questoes):
+        resp = list()
+        for r in respostas:
+            for q in questoes:
+                if q.id == r[0]:
+                    if len(q.alternativas) > 1: resp.append(API.resposta_optativa(r[0], r[1])) # crio obj resposta com api
+                    else: resp.append(API.resposta_discursiva(r[0], r[1])) # crio obj resposta com api
+                    break
+
         m = provaonline_pb2.MENSAGEM()
         m.reqresp.token = token #string
         m.reqresp.id_prova = id_prova #string
-        for r in respostas:
+        for r in resp:
             rp = m.reqresp.respostas.add()
             rp.id = r.id
             if r.HasField('codigos'): 

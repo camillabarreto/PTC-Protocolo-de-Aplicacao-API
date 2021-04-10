@@ -57,24 +57,8 @@ class Cliente():
         self.shutdown()
 
     def reqresp(self):
-        # crio resposta com api
-        respostas = [[654,['222','xxx']],[987,'111'],[321,"A Rosa dos Ventos eh um instrumento antigo utilizado para auxiliar na localizacao relativa."]]
-        resp = []
-        for r in respostas:
-            print("resposta : ",r)
-            for q in self.prova.questoes:
-                print("questao : ",q)
-                if q.id == r[0]:
-                    if len(q.alternativas) > 1: 
-                        print("optativa")
-                        resp.append(API.resposta_optativa(r[0], r[1]))
-                    else: 
-                        print("discursiva")
-                        resp.append(API.resposta_discursiva(r[0], r[1]))
-                    break
-        
-        # respostas = self.coletando_respostas()
-        data = API.reqresp(self.token, self.prova.id_prova, resp)
+        respostas = self.coletando_respostas() # respostas do aluno
+        data = API.reqresp(self.token, self.prova.id_prova, respostas, self.prova.questoes) # parm questoes p/ verificar tipo resp
         print('Mensagem codificada:', data)
         self.connect(data) # envia dados pelo socket
         self.shutdown()
@@ -101,20 +85,8 @@ class Cliente():
 
     
     def coletando_respostas(self): # Respostas estáticas
-        
-        # R1
-        resp1 = provaonline_pb2.RESPOSTA()
-        resp1.id = 654
-        resp1.codigos.codigos.append('222')
-        
-        # R2
-        resp2 = provaonline_pb2.RESPOSTA()
-        resp2.id = 987
-        resp2.codigos.codigos.append('111')
-        
-        # R3
-        resp3 = provaonline_pb2.RESPOSTA()
-        resp3.id = 321
-        resp3.texto = "A Rosa dos Ventos eh um instrumento antigo utilizado para auxiliar na localizacao relativa."
-
-        return [resp1, resp2, resp3]
+        respostas = list()
+        respostas.append([654,['222','xxx']])
+        respostas.append([987,'111'])
+        respostas.append([321,"A Rosa dos Ventos eh um instrumento antigo utilizado para auxiliar na localizacao relativa."])
+        return respostas
