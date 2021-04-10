@@ -26,17 +26,19 @@ def checklogin(msg):
 def maketest(msg):
     print("REQPROVA")
     # consulta o id para saber qual a prova correspondente
-    '''
-    global idprova
-    global questoes
-    return API.ackreqprova(idprova, questoes)
-    '''
+    if msg.reqprova.id_prova == idprova:
+        return API.ackreqprova('questoes.txt')
+    # else:
+    #     return API.ackreqprova('questoes.txt')
 
 def reqresp():
     print("REQRESP")
 
 def reqresultado():
     print("REQRESULTADO")
+
+    # if msg.id_prova == idprova:
+    #     return API.ackreqresultado(id_prova, 8, questoes)
 
 def logout(msg):
     print("LOGOUT")
@@ -60,14 +62,15 @@ if __name__ == '__main__':
 
         elif des=='reqprova':
             print('REQ_PROVA')
-            # data = maketest(msg)
-            con.send(API.ackreqprova())
+            data = maketest(msg)
+            con.send(data)
             
         elif des=='reqresp':
             reqresp()
             
         elif des=='reqresultado':
-            reqresultado()
+            data = reqresultado()
+            con.send(data)
             
         elif des=='logout':
             logout(msg)

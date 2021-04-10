@@ -51,7 +51,7 @@ class Cliente():
             print('Resposta servidor:\n', msg)
         self.s.shutdown(SHUT_RDWR)
 
-    def reqresp(self, token, id_prova, respostas):
+    def reqresp(self, id_prova, respostas):
         self.connect()
         data = API.reqresp(self.token, id_prova, respostas)
         print('Mensagem codificada:', data)
@@ -59,7 +59,7 @@ class Cliente():
         ## ack??
         self.s.shutdown(SHUT_RDWR) # como receber mensagem de volta do servidor?
     
-    def reqresultado(self, token, id_prova):
+    def reqresultado(self, id_prova):
         self.connect()
         data = API.reqresultado(self.token, id_prova)
         print('Mensagem codificada:', data)

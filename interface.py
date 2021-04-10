@@ -37,11 +37,11 @@ def prova():
 def respostas():
     print("respostas")
     idprova = input("ID da prova: ")
-    # a interface sabe quantas questões têm para o cliente responder?
 
 def resultado():
     print("resultado")
     idprova = input("ID da prova: ")
+    cliente.reqresultado(id_prova)
 
 def logout():
     print("***** LOGOUT *****\n")

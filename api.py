@@ -82,10 +82,10 @@ class API():
         m.reqprova.id_prova = id_prova #string
         return m.SerializeToString()
     
-    def ackreqprova():
+    def ackreqprova(file):
         m = provaonline_pb2.MENSAGEM()
         try:
-            f = open('questoes.txt', "rb")
+            f = open(file, "rb")
             m.ackreqprova.ParseFromString(f.read())
             f.close()
         except IOError:
