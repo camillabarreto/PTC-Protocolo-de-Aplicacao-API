@@ -23,21 +23,12 @@ def checklogin(msg):
     else:
         return API.acklogin('000000000')
 
-def maketest(msg):
-    print("REQPROVA")
-    # consulta o id para saber qual a prova correspondente
-    '''
-    global idprova
-    global questoes
-    return API.ackreqprova(idprova, questoes)
-    '''
+# def reqresp(msg):
+#     print("REQRESP")
+#     print('Recebido pelo servidor: ', msg)
 
-def reqresp(msg):
-    print("REQRESP")
-    print('Recebido pelo servidor: ', msg)
-
-def reqresultado():
-    print("REQRESULTADO")
+# def reqresultado():
+#     print("REQRESULTADO")
 
 def logout(msg):
     print("LOGOUT")
@@ -59,7 +50,7 @@ if __name__ == '__main__':
     s.listen()  # espera conexões na porta
 
     while True:
-        print('Esperando conexão...')
+        print('\nEsperando conexão...')
         con, addr = s.accept()
         data = con.recv(1024)
 
@@ -77,10 +68,12 @@ if __name__ == '__main__':
             con.send(API.ackreqprova())
             
         elif des=='reqresp':
-            reqresp(msg)
+            # reqresp(msg)
+            print('Recebido pelo servidor: ', msg)
             
         elif des=='reqresultado':
-            reqresultado()
+            # reqresultado()
+            print('Recebido pelo servidor: ', msg)
             
         elif des=='logout':
             logout(msg)

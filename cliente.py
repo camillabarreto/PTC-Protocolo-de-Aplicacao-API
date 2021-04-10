@@ -36,13 +36,6 @@ class Cliente():
             self.token = msg.token
         self.shutdown() 
 
-    
-    def logout(self):
-        data = API.logout(self.token)
-        print('Mensagem codificada:', data)
-        self.connect(data) # envia dados pelo socket
-        self.shutdown()
-
     def reqprova(self, id_prova):
         data = API.reqprova(self.token, id_prova)
         print('Mensagem codificada:', data)
