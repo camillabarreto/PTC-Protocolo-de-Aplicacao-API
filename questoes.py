@@ -2,9 +2,9 @@
  
 import provaonline_pb2
 
-ackreqprova = provaonline_pb2.ACK_REQ_PROVA()
-ackreqprova.id_prova = '11233'
-questao1 = ackreqprova.questoes.add()
+msg = provaonline_pb2.MENSAGEM()
+msg.ackreqprova.id_prova = '11233'
+questao1 = msg.ackreqprova.questoes.add()
 questao1.id = 654
 questao1.enunciado = 'Qual a capital de Santa Catarina?'
 questao1.pontos = 3
@@ -17,7 +17,7 @@ alternativa12.descricao = '(b) Florianopolis'
 alternativa13 = questao1.alternativas.add()
 alternativa13.codigo = '333'
 alternativa13.descricao = '(c) Sao Paulo'
-questao2 = ackreqprova.questoes.add()
+questao2 = msg.ackreqprova.questoes.add()
 questao2.id = 987
 questao2.enunciado = 'Qual a capital de Pernambuco?'
 questao2.pontos = 3
@@ -30,20 +30,20 @@ alternativa22.descricao = '(b) Aracaju'
 alternativa23 = questao2.alternativas.add()
 alternativa23.codigo = '333'
 alternativa23.descricao = '(c) Goiania'
-questao3 = ackreqprova.questoes.add()
+questao3 = msg.ackreqprova.questoes.add()
 questao3.id = 321
 questao3.enunciado = 'Qual a utilidade da Rosa dos Ventos?'
 questao3.pontos = 4
 
-data4 = ackreqprova.SerializeToString()
+# data4 = msg.SerializeToString()
 
 # print('Mensagem codificada:', data4)
-copia4 = provaonline_pb2.ACK_REQ_PROVA()
+# copia4 = provaonline_pb2.MENSAGEM()
 
 # print('Mensagem decodificada:')
 # print(ackreqprova)
 
 # Write the new address book back to disk.
 f = open('questoes.txt', "wb")
-f.write(ackreqprova.SerializeToString())
+f.write(msg.SerializeToString())
 f.close()

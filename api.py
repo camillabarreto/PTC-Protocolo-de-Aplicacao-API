@@ -33,10 +33,11 @@ class API():
             return msg,"reqprova"
 
         elif msg.HasField('ackreqprova'):
-            # a = provaonline_pb2.ACK_REQ_PROVA()
+            a = provaonline_pb2.ACK_REQ_PROVA()
+            a = msg.ackreqprova
             # a.id_prova = msg.ackreqprova.id_prova
             # a.questoes = msg.ackreqprova.questoes
-            return msg,"ackreqprova"
+            return a,"ackreqprova"
 
         elif msg.HasField('reqresp'):
             r = provaonline_pb2.REQ_RESP()
@@ -82,14 +83,19 @@ class API():
         m.reqprova.id_prova = id_prova #string
         return m.SerializeToString()
     
-    def ackreqprova(file):
+    def ackreqprova(obj):
         m = provaonline_pb2.MENSAGEM()
-        try:
-            f = open(file, "rb")
-            m.ackreqprova.ParseFromString(f.read())
-            f.close()
-        except IOError:
-            print("Could not open file.  Creating a new one.")
+        m.ackreqprova.id_prova = obj.id_prova
+        for q in obj.questoes:
+            questoes = m.ackreqprova.questoes.add()
+            questoes.id = q.id
+            questoes.enunciado = q.enunciado
+            questoes.pontos = q.pontos
+            # for a in questoes.alternativas:
+            #     alternativas = questoes.alternativas.add()
+            #     alternativas.descricao = a.descricao
+            #     alternativas.codigo = a.codigo
+        print('API: ', m)
         return m.SerializeToString()
     
     def reqresp(token, id_prova, respostas):

@@ -27,7 +27,14 @@ def maketest(msg):
     print("REQPROVA")
     # consulta o id para saber qual a prova correspondente
     if msg.reqprova.id_prova == idprova:
-        return API.ackreqprova('questoes.txt')
+        try:
+            f = open('questoes.txt', "rb")
+            lido = f.read()
+            f.close()
+        except IOError:
+            print("Could not open file.  Creating a new one.")
+        data,des = API.mensagem(lido)
+        return API.ackreqprova(data)
     # else:
     #     return API.ackreqprova('questoes.txt')
 
