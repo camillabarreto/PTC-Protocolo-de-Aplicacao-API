@@ -42,7 +42,7 @@ class API_APP():
         ms.reqprova.id_prova = id_prova #string
         mr = self.send(ms.SerializeToString())
         if mr.HasField('status'):
-            return False  #, mr.acklogin.status.descricao
+            return False, mr.acklogin.status.descricao
         else:
             return True, mr.ackreqprova.questoes
 
@@ -58,9 +58,9 @@ class API_APP():
             else: rp.texto = r.texto
         mr = self.send(ms.SerializeToString())
         if mr.status.codigo == NACK:
-            return False #, mr.acklogin.status.descricao
+            return False, mr.acklogin.status.descricao
         else:
-            return True
+            return True, None
         
     def reqresultado(self, id_prova):
         ms = provaonline_pb2.MENSAGEM()

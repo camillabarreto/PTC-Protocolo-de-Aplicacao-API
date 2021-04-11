@@ -78,6 +78,7 @@ if __name__ == '__main__':
     token = '378rbf9sd'
     id_prova = '1'
     questoes = pegando_questoes()
+    respostas = None
 
     while True:
         print('\nEsperando conexão...')
@@ -111,18 +112,19 @@ if __name__ == '__main__':
                             z.codigo = a.codigo
                 print('ACK REQ_PROVA')
             else:
-                mr.acklogin.status.codigo = NACK 
+                mr.status.codigo = NACK 
                 print("NACK REQ PROVA")
             
         elif msg.HasField('reqresp'):
-            # if msg.reqprova.id_prova == id_prova and msg.reqprova.token == token:
-            #     mr.ackreqprova.id_prova = id_prova
-            #     mr.ackreqprova.questoes = questoes
-            #     print('ACK REQ_PROVA')
-            # else:
-            #     mr.acklogin.status.codigo = NACK 
-            #     print("NACK LOGIN")
-            pass
+            print(msg)
+            if msg.reqresp.id_prova == id_prova and msg.reqresp.token == token:
+                respostas = msg.reqresp.respostas
+                mr.status.codigo = ACK                
+                print('ACK REQ_PROVA')
+            else:
+                mr.status.codigo = NACK 
+                print("NACK LOGIN")
+            
             
         elif msg.HasField('reqresultado'):
             # reqresultado()

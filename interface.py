@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-from cliente import Cliente
 from api_app import API_APP
+import provaonline_pb2
 
 LOGIN = '1'
 PROVA = '2'
@@ -10,6 +10,25 @@ RESULTADO = '4'
 LOGOUT = '5'
 
 api_app = API_APP('127.0.0.1', 8888)
+
+# message RESPOSTA {
+#   required int32 id = 1;
+#   oneof resp {
+#     string texto = 2;
+#     CODIGOS codigos = 3; // letra da questão, se tiver
+#   }
+# }
+def pegando_respostas():
+    r1 = provaonline_pb2.RESPOSTA()
+    r1.id = 654
+    r1.codigos.codigos.append('222')
+    r2 = provaonline_pb2.RESPOSTA()
+    r2.id = 987
+    r2.codigos.codigos.append('111')
+    r3 = provaonline_pb2.RESPOSTA()
+    r3.id = 321
+    r3.texto = "A Rosa dos Ventos eh um instrumento antigo utilizado para auxiliar na localizacao relativa."
+    return [r1, r2, r3]
 
 def menu(switch):
     
@@ -42,7 +61,9 @@ def prova():
 
 def respostas():
     print("****** ENVIA RESPOSTAS *****\n")
-    if api_app.reqresp():
+    idprova = input("ID da prova: ")
+    ack, msg = api_app.reqresp(idprova, pegando_respostas())
+    if ack:
         print("REQRESP OK")
     else: print("NACK")
 
