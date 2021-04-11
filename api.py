@@ -10,6 +10,7 @@ class API():
     
     def mensagem(data):
         msg = provaonline_pb2.MENSAGEM()
+        # print('DATA: ', type(data))
         msg.ParseFromString(data)
         # print('Mensagem recebida:\n', msg)
 
@@ -33,11 +34,11 @@ class API():
             return msg,"reqprova"
 
         elif msg.HasField('ackreqprova'):
-            a = provaonline_pb2.ACK_REQ_PROVA()
-            a = msg.ackreqprova
+            # a = provaonline_pb2.ACK_REQ_PROVA()
+            # a = msg.ackreqprova
             # a.id_prova = msg.ackreqprova.id_prova
             # a.questoes = msg.ackreqprova.questoes
-            return a,"ackreqprova"
+            return msg,"ackreqprova"
 
         elif msg.HasField('reqresp'):
             r = provaonline_pb2.REQ_RESP()
@@ -83,18 +84,22 @@ class API():
         m.reqprova.id_prova = id_prova #string
         return m.SerializeToString()
     
-    def ackreqprova(obj):
+    def ackreqprova(id_prova, questoes):
         m = provaonline_pb2.MENSAGEM()
-        m.ackreqprova.id_prova = obj.id_prova
-        for q in obj.questoes:
-            questoes = m.ackreqprova.questoes.add()
-            questoes.id = q.id
-            questoes.enunciado = q.enunciado
-            questoes.pontos = q.pontos
-            # for a in questoes.alternativas:
-            #     alternativas = questoes.alternativas.add()
-            #     alternativas.descricao = a.descricao
-            #     alternativas.codigo = a.codigo
+        m.ackreqprova.id_prova = id_prova
+        for q in questoes:
+            x = provaonline_pb2.QUESTAO()
+            # print('QUESTAO: ', type(q))
+            x.ParseFromString(q)
+            y = m.ackreqprova.questoes.add()
+            y.id = x.id
+            y.enunciado = x.enunciado
+            y.pontos = x.pontos
+            if len(x.alternativas) > 1: # caso seja optativa
+                for a in x.alternativas:
+                    z = y.alternativas.add()
+                    z.descricao = a.descricao
+                    z.codigo = a.codigo
         print('API: ', m)
         return m.SerializeToString()
     
@@ -122,4 +127,3 @@ class API():
         m = provaonline_pb2.MENSAGEM()
         m.logout.token = token #string
         return m.SerializeToString()
-    

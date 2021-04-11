@@ -26,15 +26,17 @@ def checklogin(msg):
 def maketest(msg):
     print("REQPROVA")
     # consulta o id para saber qual a prova correspondente
+    arquivos = ['questao1.txt', 'questao2.txt', 'questao3.txt']
+    questoes = list()
     if msg.reqprova.id_prova == idprova:
-        try:
-            f = open('questoes.txt', "rb")
-            lido = f.read()
-            f.close()
-        except IOError:
-            print("Could not open file.  Creating a new one.")
-        data,des = API.mensagem(lido)
-        return API.ackreqprova(data)
+        for arq in arquivos:
+            try:
+                f = open(arq, "rb")
+                questoes.append(f.read())
+                f.close()
+            except IOError:
+                print("Could not open file. Creating a new one.")
+        return API.ackreqprova(idprova, questoes)
     # else:
     #     return API.ackreqprova('questoes.txt')
 
