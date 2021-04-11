@@ -79,7 +79,8 @@ def resultado():
 
 def logout():
     print("***** LOGOUT *****\n")
-    if api_app.logout():
+    ack, msg = api_app.logout()
+    if ack:
         print("LOGOUT OK")
     else: print("NACK")
     

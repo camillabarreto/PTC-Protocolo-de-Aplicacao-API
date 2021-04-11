@@ -74,9 +74,9 @@ class API_APP():
 
     def logout(self):
         ms = provaonline_pb2.MENSAGEM()
-        ms.logout.token = token #string
+        ms.logout.token = self.token #string
         mr = self.send(ms.SerializeToString())
         if mr.status.codigo == NACK:
-            return False #, mr.acklogin.status.descricao
+            return False, mr.status.descricao
         else: 
-            return True
+            return True, None

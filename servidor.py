@@ -5,38 +5,8 @@ from socket import*
 import provaonline_pb2
 from api import API
 
-# LOGIN
-usuario = ["aluno"]
-senha = ["aluno"]
-token = None
-
-# PROVA
-idprova = '11233'
-
 ACK = 000 # ack ok
 NACK = 999 # ack not ok
-
-def checklogin(msg):
-    print("LOGIN")
-    # verifica se pode autenticar ...
-    if msg.login == usuario[0] and msg.senha == senha[0]:
-        global token
-        token = '378rbf9sd'
-        return API.acklogin(token)
-    else:
-        return API.acklogin('000000000')
-
-# def reqresp(msg):
-#     print("REQRESP")
-#     print('Recebido pelo servidor: ', msg)
-
-# def reqresultado():
-#     print("REQRESULTADO")
-
-def logout(msg):
-    print("LOGOUT")
-    global token
-    token = None
 
 def pegando_questoes():
     questao1 = provaonline_pb2.QUESTAO()
@@ -87,7 +57,10 @@ if __name__ == '__main__':
     s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)
     s.bind(('0.0.0.0', 8888))
     s.listen()  # espera conexões na porta
+    usuario = "aluno"
+    senha = "aluno"
     token = '378rbf9sd'
+    token_valido = None
     id_prova = '1'
     questoes = pegando_questoes()
     respostas = None
@@ -103,8 +76,9 @@ if __name__ == '__main__':
         msg.ParseFromString(data)
         mr = provaonline_pb2.MENSAGEM()
         if msg.HasField('login'):
-            if msg.login.login == "aluno" and msg.login.senha == "aluno":
+            if msg.login.login == usuario and msg.login.senha == senha:
                 mr.acklogin.token = token
+                token_valido = token
                 mr.acklogin.status.codigo = ACK
                 print("ACK LOGIN")
             else: 
@@ -112,7 +86,7 @@ if __name__ == '__main__':
                 print("NACK LOGIN")
 
         elif msg.HasField('reqprova'):
-            if msg.reqprova.id_prova == id_prova and msg.reqprova.token == token:
+            if msg.reqprova.id_prova == id_prova and msg.reqprova.token == token_valido:
                 mr.ackreqprova.id_prova = id_prova
                 for q in questoes:
                     y = mr.ackreqprova.questoes.add()
@@ -131,7 +105,7 @@ if __name__ == '__main__':
             
         elif msg.HasField('reqresp'):
             print(msg)
-            if msg.reqresp.id_prova == id_prova and msg.reqresp.token == token:
+            if msg.reqresp.id_prova == id_prova and msg.reqresp.token == token_valido:
                 respostas = msg.reqresp.respostas
                 mr.status.codigo = ACK                
                 print('ACK REQ_PROVA')
@@ -141,7 +115,7 @@ if __name__ == '__main__':
             
             
         elif msg.HasField('reqresultado'):
-            if msg.reqresultado.id_prova == id_prova and msg.reqresultado.token == token:
+            if msg.reqresultado.id_prova == id_prova and msg.reqresultado.token == token_valido:
                 mr.ackreqresultado.id_prova = id_prova
                 mr.ackreqresultado.nota = nota
                 for r in resultados:
@@ -154,6 +128,12 @@ if __name__ == '__main__':
                 print("NACK REQ PROVA")
             
         elif msg.HasField('logout'):
-            logout(msg)
+            if msg.logout.token == token_valido:
+                mr.status.codigo = ACK
+                token_valido = None
+                print("ACK LOGOUT")
+            else: 
+                mr.status.codigo = NACK 
+                print("NACK LOGOUT")
         
         con.send(mr.SerializeToString())
