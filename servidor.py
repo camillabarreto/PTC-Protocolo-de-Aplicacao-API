@@ -13,6 +13,9 @@ token = None
 # PROVA
 idprova = '11233'
 
+ACK = 000 # ack ok
+NACK = 999 # ack not ok
+
 def checklogin(msg):
     print("LOGIN")
     # verifica se pode autenticar ...
@@ -54,28 +57,30 @@ if __name__ == '__main__':
         con, addr = s.accept()
         data = con.recv(1024)
 
-        msg,des = API.mensagem(data)
-        if des=='login': # se for mensagem de login
-            data = checklogin(msg)
-            con.send(data)
+        msg = provaonline_pb2.MENSAGEM()
+        msg.ParseFromString(data)
+        if msg.HasField('login'):
+            mr = provaonline_pb2.MENSAGEM()
+            if msg.login.login == "aluno" and msg.login.senha == "aluno":
+                mr.acklogin.token = '378rbf9sd'
+                mr.acklogin.status.codigo = ACK
+                print("ACK LOGIN")
+            else: 
+                mr.acklogin.status.codigo = NACK 
+                print("NACK LOGIN")
+            con.send(mr.SerializeToString())
 
-        elif des=='reqprova':
+        elif msg.HasField('reqprova'):
             print('REQ_PROVA')
-
-            # questoes = pegando_questoes()     # questoes é uma lista
-            # API.ackreqprova(id_prova, questoes)
-
             con.send(API.ackreqprova())
             
-        elif des=='reqresp':
+        elif msg.HasField('reqresp'):
             # reqresp(msg)
             print('Recebido pelo servidor: ', msg)
             
-        elif des=='reqresultado':
+        elif msg.HasField('reqresultado'):
             # reqresultado()
             print('Recebido pelo servidor: ', msg)
             
-        elif des=='logout':
+        elif msg.HasField('logout'):
             logout(msg)
-
-        print("token: ", token)
