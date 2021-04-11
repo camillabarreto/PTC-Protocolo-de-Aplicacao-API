@@ -33,8 +33,10 @@ def login():
 def prova():
     print("****** SOLICITA PROVA *****\n")
     idprova = input("ID da prova: ")
-    if api_app.reqprova(idprova):
+    ack, msg = api_app.reqprova(idprova)
+    if ack:
         print("REQPROVA OK")
+        print(msg)
     else: print("NACK")
 
 
