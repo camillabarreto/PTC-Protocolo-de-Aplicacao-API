@@ -68,9 +68,9 @@ class API_APP():
         ms.reqresultado.id_prova = id_prova #string
         mr = self.send(ms.SerializeToString())
         if mr.HasField('status'):
-            return False #, mr.acklogin.status.descricao
+            return False, mr.status.descricao
         else:
-            return True, mr.ackreqresultado.questoes
+            return True, mr.ackreqresultado
 
     def logout(self):
         ms = provaonline_pb2.MENSAGEM()

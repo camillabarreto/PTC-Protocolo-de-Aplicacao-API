@@ -71,6 +71,18 @@ def pegando_questoes():
     questao3.pontos = 4
     return [questao1, questao2, questao3]
 
+def pegando_resultados():
+    r1 = provaonline_pb2.RESULTADO()
+    r1.questao = 987
+    r1.pontos = 3
+    r2 = provaonline_pb2.RESULTADO()
+    r2.questao = 654
+    r2.pontos = 3
+    r3 = provaonline_pb2.RESULTADO()
+    r3.questao = 321
+    r3.pontos = 4
+    return [r1, r2, r3]
+
 if __name__ == '__main__':
     s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)
     s.bind(('0.0.0.0', 8888))
@@ -79,6 +91,8 @@ if __name__ == '__main__':
     id_prova = '1'
     questoes = pegando_questoes()
     respostas = None
+    nota = 10
+    resultados = pegando_resultados()
 
     while True:
         print('\nEsperando conexão...')
@@ -127,8 +141,17 @@ if __name__ == '__main__':
             
             
         elif msg.HasField('reqresultado'):
-            # reqresultado()
-            print('Recebido pelo servidor: ', msg)
+            if msg.reqresultado.id_prova == id_prova and msg.reqresultado.token == token:
+                mr.ackreqresultado.id_prova = id_prova
+                mr.ackreqresultado.nota = nota
+                for r in resultados:
+                    y = mr.ackreqresultado.questoes.add()
+                    y.questao = r.questao
+                    y.pontos = r.pontos
+                print('ACK REQ_PROVA')
+            else:
+                mr.status.codigo = NACK 
+                print("NACK REQ PROVA")
             
         elif msg.HasField('logout'):
             logout(msg)

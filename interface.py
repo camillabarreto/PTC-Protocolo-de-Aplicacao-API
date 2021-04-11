@@ -70,8 +70,10 @@ def respostas():
 def resultado():
     print("****** SOLICITA RESULTADOS *****\n")
     idprova = input("ID da prova: ")
-    if api_app.reqresultado():
+    ack, msg = api_app.reqresultado(idprova)
+    if ack:
         print("REQRESULTADO OK")
+        print(msg)
     else: print("NACK")
 
 
