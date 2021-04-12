@@ -1,9 +1,0 @@
-
-11233nŽ!Qual a capital de Santa Catarina?"
-(a) Sao Paulo111"
-(b) Florianopolis222"
-(c) Sao Paulo333_ÛQual a capital de Pernambuco?"
-
-(a) Recife111"
-(b) Aracaju222"
-(c) Goiania333+Á$Qual a utilidade da Rosa dos Ventos?

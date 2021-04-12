@@ -9,7 +9,11 @@ RESPOSTAS = '3'
 RESULTADO = '4'
 LOGOUT = '5'
 
-api_app = API_APP('127.0.0.1', 8888)
+ip_connect = '127.0.0.1'
+port_connect = 8888
+ip_bind = '0.0.0.0'
+port_bind = 0
+api_app = API_APP(ip_connect, port_connect, ip_bind, port_bind)
 
 # message RESPOSTA {
 #   required int32 id = 1;
@@ -45,7 +49,8 @@ def login():
     print("****** LOGIN *****\n")
     usuario = input("Usuario: ")
     senha = input("Senha: ")
-    if api_app.login(usuario, senha):
+    ack, msg = api_app.login(usuario, senha)
+    if ack:
         print("LOGIN OK")
     else: print("NACK")
 

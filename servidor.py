@@ -3,7 +3,6 @@
 import sys
 from socket import*
 import provaonline_pb2
-from api import API
 
 ACK = 000 # ack ok
 NACK = 999 # ack not ok
@@ -54,8 +53,10 @@ def pegando_resultados():
     return [r1, r2, r3]
 
 if __name__ == '__main__':
+    ip_bind = '0.0.0.0'
+    port_bind = 8888
     s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)
-    s.bind(('0.0.0.0', 8888))
+    s.bind((ip_bind, port_bind))
     s.listen()  # espera conexões na porta
     usuario = "aluno"
     senha = "aluno"

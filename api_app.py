@@ -8,16 +8,18 @@ ACK = 000 # ack ok
 NACK = 999 # ack not ok
 
 class API_APP():
-    def __init__(self, ip, port):
+    def __init__(self, ip_connect, port_connect, ip_bind, port_bind):
         self.token = ''
-        self.ip = ip
-        self.port = port
+        self.ip_connect = ip_connect
+        self.port_connect = port_connect
+        self.ip_bind = ip_bind
+        self.port_bind = port_bind
         self.socket = None
     
     def send(self, data):
         self.socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)
-        self.socket.bind(('0.0.0.0', 0))
-        self.socket.connect((self.ip, self.port))
+        self.socket.bind((self.ip_bind, self.port_bind))
+        self.socket.connect((self.ip_connect, self.port_connect))
         self.socket.send(data) # envia dados pelo socket
         data = self.socket.recv(1024)
         self.socket.shutdown(SHUT_RDWR)  
@@ -31,10 +33,10 @@ class API_APP():
         ms.login.senha = senha #string
         mr = self.send(ms.SerializeToString())
         if mr.acklogin.status.codigo == NACK:
-            return False  #, mr.acklogin.status.descricao
+            return False, mr.acklogin.status.descricao
         else:
             self.token = mr.acklogin.token
-            return True
+            return True, None
     
     def reqprova(self, id_prova):
         ms = provaonline_pb2.MENSAGEM()
